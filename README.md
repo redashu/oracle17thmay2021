@@ -453,5 +453,43 @@ ashuc1
 
 ```
 
+# Application containerization process
+
+## BUild --> RUN 
+
+<img src="build.png">
+
+
+## Image building tool 
+
+<img src="tool.png">
+
+
+## Image build process
+
+
+<img src="build1.png">
+
+## Building python code image 
+
+```
+❯ ls
+Dockerfile hello.py
+❯ docker  build  -t    ashuimg:pycodev1  .
+Sending build context to Docker daemon  3.584kB
+Step 1/6 : FROM  oraclelinux:8.3
+ ---> 816d99f0bbe8
+Step 2/6 : MAINTAINER  ashutoshh@linux.com
+ ---> Running in 98fbeb6172ec
+Removing intermediate container 98fbeb6172ec
+ ---> f1b8ce8c18e7
+Step 3/6 : RUN  dnf  install python3 -y
+ ---> Running in de2a3ac5c4ec
+Oracle Linux 8 BaseOS Latest (x86_64)            73 MB/s |  32 MB     00:00    
+
+
+```
+
+
 
 
