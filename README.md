@@ -490,6 +490,30 @@ Oracle Linux 8 BaseOS Latest (x86_64)            73 MB/s |  32 MB     00:00
 
 ```
 
+## creating container from that image 
+
+```
+❯ docker   run -itd --name ashuc009    ashuimg:pycodev1
+6dbdd61ad3c93c7d8bcb381281c3db5d7d954123e0e7762274d376606b02a4e6
+❯ docker  ps
+CONTAINER ID   IMAGE                 COMMAND                  CREATED             STATUS             PORTS                    NAMES
+6dbdd61ad3c9   ashuimg:pycodev1      "python3 /mycode/hel…"   17 seconds ago      Up 15 seconds                               ashuc009
+
+
+```
+
+### checking output 
+
+```
+❯ docker logs -f  ashuc009
+Hello all , welcome to python..!!
+Welcome to LnB..
+Welcome to Containers ..!!
+______________________
+Hello all , welcome to p
+
+```
+
 
 
 
