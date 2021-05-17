@@ -281,5 +281,168 @@ java                     latest    d23bdf5b1b1b   4 years ago    643MB
 <img src="cont_cr.png">
 
 
+## creating container 
+
+<img src="create_cont.png">
+
+### demo 
+
+```
+❯ docker   run  --name  ashuc1  alpine:latest  ping google.com
+PING google.com (172.217.7.238): 56 data bytes
+64 bytes from 172.217.7.238: seq=0 ttl=111 time=1.188 ms
+64 bytes from 172.217.7.238: seq=1 ttl=111 time=1.210 ms
+64 bytes from 172.217.7.238: seq=2 ttl=111 time=1.247 ms
+64 bytes from 172.217.7.238: seq=3 ttl=111 time=1.782 ms
+64 bytes from 172.217.7.238: seq=4 ttl=111 time=1.193 ms
+64 bytes from 172.217.7.238: seq=5 ttl=111 time=1.192 ms
+64 bytes from 172.217.7.238: seq=6 ttl=111 time=1.199 ms
+64 bytes from 172.217.7.238: seq=7 ttl=111 time=1.170 ms
+64 bytes from 172.217.7.238: seq=8 ttl=111 time=1.246 ms
+64 bytes from 172.217.7.238: seq=9 ttl=111 time=1.190 ms
+64 bytes from 172.217.7.238: seq=10 ttl=111 time=1.251 ms
+64 bytes from 172.217.7.238: seq=11 ttl=111 time=1.198 ms
+64 bytes from 172.217.7.238: seq=12 ttl=111 time=1.219 ms
+64 bytes from 172.217.7.238: seq=13 ttl=111 time=1.187 ms
+64 bytes from 172.217.7.238: seq=14 ttl=111 time=1.285 ms
+64 bytes from 172.217.7.238: seq=15 ttl=111 time=1.221 ms
+64 bytes from 172.217.7.238: seq=16 ttl=111 time=1.235 ms
+64 bytes from 172.217.7.238: seq=17 ttl=111 time=1.205 ms
+^C64 bytes from 172.217.7.238: seq=18 ttl=111 time=1.213 ms
+
+--- google.com ping statistics ---
+19 packets transmitted, 19 packets received, 0% packet loss
+round-trip min/avg/max = 1.170/1.243/1.782 ms
+^C%                                                             
+```
+
+### list of running container 
+
+```
+❯ docker   ps
+CONTAINER ID   IMAGE           COMMAND             CREATED          STATUS          PORTS     NAMES
+c26a4e83fc6c   alpine:latest   "ping google.com"   11 seconds ago   Up 8 seconds              sandip1
+ad87fa50136a   alpine:latest   "ping google.com"   28 seconds ago   Up 25 seconds             sri
+❯ 
+
+```
+
+### listing all containers running or exited 
+
+```
+❯ docker  ps  -a
+CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS                     PORTS                NAMES
+8b2935bb44a8   alpine:latest            "ping google.com"        21 seconds ago   Created                                         raman
+fdbd6a932f6f   alpine                   "ping google.com"        27 seconds ago   Up 24 seconds                                   naveenc1
+179ac1fbad80   alpine:latest            "ping google.com"        28 seconds ago   Up 25 seconds                                   abhinav
+22d3b35da367   alpine                   "ping google.com"        46 seconds ago   Up 42 seconds                                   dhirajk
+34e39e7a96a2   alpine:latest            "ping fb.com"            48 seconds ago   Up 45 seconds                                   dips
+136148ade7ff   alpine:latest            "ping google.com"        53 seconds ago   Up 50 seconds                                   revathi1
+c26a4e83fc6c   alpine:latest            "ping google.com"        2 minutes ago    Exited (0) 2 minutes ago                        sandip1
+ad87fa50136a   alpine:latest            "ping google.com"        3 minutes ago    Up 3 minutes                                    sri
+f559e37ab161   alpine:latest            "ping google.com"        3 minutes ago    Exited (0) 3 minutes ago                        swatic1
+8094a6bd9311   alpine:latest            "ping google.com"        4 minutes ago    Exited (0) 4 minutes ago                        ashuc1
+2c7bac3472a6   d1165f221234             "/hello"                 2 hours ago      Exited (0) 2 hours ago                          ecstatic_lamarr
+3699551de437   docker/getting-started   "/docker-entrypoint.…"   2 hours ago      Exited (0) 2 hours ago     0.0.0.0:80->80/tcp   heuristic_wu
+
+```
+
+### stopping container 
+
+```
+❯ docker   stop    sri
+sri
+❯ docker  ps
+CONTAINER ID   IMAGE           COMMAND                 CREATED              STATUS              PORTS     NAMES
+7d5d69d95f78   alpine:latest   "ping google.com"       About a minute ago   Up About a minute             srini
+1274f65cbe07   alpine          "ping www.google.com"   About a minute ago   Up About a minute             yogiCont
+179ac1fbad80   alpine:latest   "ping google.com"       3 minutes ago        Up 3 minutes                  abhinav
+22d3b35da367   alpine          "ping google.com"       3 minutes ago        Up 3 minutes                  dhirajk
+34e39e7a96a2   alpine:latest   "ping fb.com"           3 minutes ago        Up 3 minutes                  dips
+
+
+```
+
+### check output of any container parent process
+
+```
+10080  docker  logs    ashuc1  
+10081  docker  logs  -f  ashuc1  
+
+```
+
+### alternative to docker stop --- is docker kill
+
+```
+❯ docker  kill   div  mahi  swatic1 ashuc1
+
+div
+mahi
+swatic1
+ashuc1
+❯ 
+❯ docker  ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+
+```
+
+###  Best practise to create container 
+
+
+<img src="bestc.png">
+
+```
+❯ docker  run  --name ashuc2  -it -d   alpine  ping fb.com
+94475ef343a8cbc594852e4a7ce0303478b17c86f2416ac899781ec621fc11fb
+❯ docker  ps
+CONTAINER ID   IMAGE     COMMAND         CREATED         STATUS         PORTS     NAMES
+94475ef343a8   alpine    "ping fb.com"   8 seconds ago   Up 6 seconds             ashuc2
+
+```
+
+### Docker container child process running 
+
+```
+❯ docker   exec  ashuc2  ping  127.0.0.1
+PING 127.0.0.1 (127.0.0.1): 56 data bytes
+64 bytes from 127.0.0.1: seq=0 ttl=255 time=0.064 ms
+64 bytes from 127.0.0.1: seq=1 ttl=255 time=0.058 ms
+64 bytes from 127.0.0.1: seq=2 ttl=255 time=0.072 ms
+^C%                                                                                                                             ❯ docker   exec -itd   ashuc2  ping  127.0.0.1
+❯ docker  ps
+
+```
+
+
+### to check all the process running inside a container 
+
+```
+❯ docker top  ashuc2
+UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+root                2611                2560                0                   09:26               ?                   00:00:00            ping fb.com
+root                18539               2560                0                   09:30               ?                   00:00:00            ping 127.0.0.1
+root                19581               2560                1                   09:30               ?                   00:00:00            ping 127.0.0.1
+
+```
+
+### login into a container 
+
+```
+❯ docker   exec -it  ashuc2  sh
+/ # 
+/ # 
+/ # ps  -e
+PID   USER     TIME  COMMAND
+    1 root      0:00 ping fb.com
+    7 root      0:00 ping 127.0.0.1
+   14 root      0:00 ping 127.0.0.1
+   20 root      0:00 sh
+   27 root      0:00 ps -e
+/ # 
+/ # exit
+
+```
+
 
 
