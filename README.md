@@ -444,5 +444,14 @@ PID   USER     TIME  COMMAND
 
 ```
 
+### removing container forever 
+
+```
+❯ docker  rm   ashuc1
+ashuc1
+❯ 
+
+```
+
 
 
