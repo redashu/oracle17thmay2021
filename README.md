@@ -1,3 +1,7 @@
-## Docker & Kubernets content of live session you can check in day1 to day5 branches
+## Getting started with Docker -- the container platform.
 
-## Enjoy Learning 
+## who can attend
+
+<img src="at.png">
+
+
