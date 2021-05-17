@@ -195,6 +195,90 @@ Server:
  ```
  
  
+## Containerization --- app--docker-image------containers
+
+<img src="contr.png">
+
+
+## Downloading some sample docker images to test  (Docker HUB)
+
+<img src="reg.png">
+
+## Searching images on Docker hub from Client machine 
+
+```
+❯ docker  search   java
+NAME                                     DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+node                                     Node.js is a JavaScript-based platform for s…   10054     [OK]       
+tomcat                                   Apache Tomcat is an open source implementati…   3031      [OK]       
+openjdk                                  OpenJDK is an open-source implementation of …   2734      [OK]       
+java                                     Java is a concurrent, class-based, and objec…   1976      [OK]       
+ghost                                    Ghost is a free and open source blogging pla…   1363      [OK]       
+couchdb                                  CouchDB is a database that uses JSON for doc…   405       [OK]       
+jetty                                    Jetty provides a Web server and javax.servle…   362       [OK]       
+groovy                                   Apache Groovy is a multi-faceted language fo…   107       [OK]       
+lwieske/java-8                           Oracle Java 8 Container - Full + Slim - Base…   49                   [OK]
+nimmis/java-cent
+
+```
+
+## pulling docker images from docker hub 
+
+```
+❯ docker  pull  oraclelinux:8.3
+8.3: Pulling from library/oraclelinux
+dd34f38d274c: Pull complete 
+Digest: sha256:af3182ee6c1e56f18fc1fecaf638da57d7c47233862e5c32f5ad723a6ab4c6db
+Status: Downloaded newer image for oraclelinux:8.3
+docker.io/library/oraclelinux:8.3
+❯ docker  images
+REPOSITORY               TAG       IMAGE ID       CREATED        SIZE
+oraclelinux              8.3       816d99f0bbe8   4 weeks ago    224MB
+docker/getting-started   latest    3ba8f2ff0727   8 weeks ago    27.9MB
+hello-world              latest    d1165f221234   2 months ago   13.3kB
+❯ docker  pull java
+Using default tag: latest
+latest: Pulling from library/java
+5040bd298390: Pull complete 
+fce5728aad85: Pull complete 
+76610ec20bf5: Pull complete 
+60170fec2151: Pull complete 
+e98f73de8f0d: Pull complete 
+11f7af24ed9c: Pull complete 
+49e2d6393f32: Pull complete 
+bb9cdec9c7f3: Pull complete 
+Digest: sha256:c1ff613e8ba25833d2e1940da0940c3824f03f802c449f3d1815a66b7f8c0e9d
+Status: Downloaded newer image for java:latest
+docker.io/library/java:latest
+❯ docker  images
+REPOSITORY               TAG       IMAGE ID       CREATED        SIZE
+oraclelinux              8.3       816d99f0bbe8   4 weeks ago    224MB
+docker/getting-started   latest    3ba8f2ff0727   8 weeks ago    27.9MB
+hello-world              latest    d1165f221234   2 months ago   13.3kB
+java                     latest    d23bdf5b1b1b   4 years ago    643MB
+❯ docker  pull  openjdk
+Using default tag: latest
+latest: Pulling from library/openjdk
+9509c6b41a37: Pull complete 
+1a0005db7778: Pull complete 
+aa65e6d4b4e5: Pull complete 
+Digest: sha256:73c458a98e3546a8e972ada48d62ad6b4b000f2925c14c25e30a1a37fcdc7879
+Status: Downloaded newer image for openjdk:latest
+docker.io/library/openjdk:latest
+❯ docker  images
+REPOSITORY               TAG       IMAGE ID       CREATED        SIZE
+openjdk                  latest    9991202d6ad6   3 weeks ago    467MB
+oraclelinux              8.3       816d99f0bbe8   4 weeks ago    224MB
+docker/getting-started   latest    3ba8f2ff0727   8 weeks ago    27.9MB
+hello-world              latest    d1165f221234   2 months ago   13.3kB
+java                     latest    d23bdf5b1b1b   4 years ago    643MB
+
+```
+
+
+## Steps to create continers 
+
+<img src="cont_cr.png">
 
 
 
