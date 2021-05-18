@@ -470,4 +470,93 @@ round-trip min/avg/max = 0.118/0.126/0.141 ms
 
 ```
 
+### remove bridge
+
+```
+❯ docker  network  rm   ashubr1
+Error response from daemon: error while removing network: network ashubr1 id d7f8b6554c57b6767b6423ded8927c820370edffaa83308deef15eb16a212a5a has active endpoints
+
+```
+
+### removeing all bridge with no use
+
+```
+❯ docker  network  prune
+WARNING! This will remove all custom networks not used by at least one container.
+Are you sure you want to continue? [y/N] y
+Deleted Networks:
+dipsbrdge
+naveenbr1
+ashubr1
+srinbridge
+revathibr1
+swatibr1
+sandip1
+mahinet
+yogbridge
+
+❯ docker  network  ls
+NETWORK ID     NAME      DRIVER    SCOPE
+1f69eada5a46   bridge    bridge    local
+612ea4c2b4a0   host      host      local
+d13a3ba33cce   none      null      local
+
+
+```
+
+### Question 1
+
+```
+Q1.   create  two containers and do the given things  
+
+Image must be alpine 
+Name of container <yourname>c1 & <yourname>c2
+Parent process you can choose accordingly 
+Create two files in container1 named aa.txt & bb.txt 
+Now copy aa.txt into second container
+Under you custom bridge complete above task 
+
+
+```
+
+## assignment 1 solution 
+
+```
+❯ docker  network  create  ashubr1  --subnet=192.168.200.0/24
+3cc1ec68531002f63d74f1f12f566e8ee4e04cacd7b41581adf5a08434345e2d
+❯ docker run -itd --name ashuc11  --network ashubr1  alpine ping fb.com
+8f2f036b49bb8c9dc7bf773f6cd173f724047d8303ae0b05ab14e0e3a7c59b10
+❯ docker run -itd --name ashuc12  --network ashubr1  alpine ping fb.com
+a4b70bc3668eacecdf560a2b27afe3d27b09e7daff762b0fd07eb3ec04c031b5
+❯ docker  exec -it ashuc11 sh
+/ # pwd
+/
+/ # ls
+bin    dev    etc    home   lib    media  mnt    opt    proc   root   run    sbin   srv    sys    tmp    usr    var
+/ # echo  hello  >aa.txt 
+/ # ls
+aa.txt  dev     home    media   opt     root    sbin    sys     usr
+bin     etc     lib     mnt     proc    run     srv     tmp     var
+/ # echo world  >bb.txt 
+/ # ls
+aa.txt  bin     etc     lib     mnt     proc    run     srv     tmp     var
+bb.txt  dev     home    media   opt     root    sbin    sys     usr
+/ # exit
+❯ docker  cp   ashuc11:/aa.txt  .
+❯ ls
+Applications          Documents             Movies                Public                awscli-bundle         k8susers
+Creative Cloud Files  Downloads             Music                 VirtualBox VMs        go                    macos-terminal-themes
+Desktop               Library               Pictures              aa.txt                javawebapp            powerlevel10k
+❯ cat  aa.txt
+hello
+❯ docker  cp aa.txt  ashuc12:/
+❯ docker  exec -it ashuc12 sh
+/ # ls
+aa.txt  dev     home    media   opt     root    sbin    sys     usr
+bin     etc     lib     mnt     proc    run     srv     tmp     var
+/ # cat aa.txt 
+hello
+/ # 
+
+```
 
