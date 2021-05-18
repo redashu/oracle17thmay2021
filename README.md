@@ -560,3 +560,143 @@ hello
 
 ```
 
+
+# Storage in Docker 
+
+### attaching external storage to host 
+
+```
+[root@ip-172-31-71-168 ~]# 
+[root@ip-172-31-71-168 ~]# lsblk 
+NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+nvme0n1       259:0    0  100G  0 disk 
+|-nvme0n1p1   259:1    0  100G  0 part /
+`-nvme0n1p128 259:2    0    1M  0 part 
+[root@ip-172-31-71-168 ~]# lsblk 
+NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+nvme0n1       259:0    0  100G  0 disk 
+|-nvme0n1p1   259:1    0  100G  0 part /
+`-nvme0n1p128 259:2    0    1M  0 part 
+nvme1n1       259:3    0  200G  0 disk 
+[root@ip-172-31-71-168 ~]# 
+[root@ip-172-31-71-168 ~]# mkfs.xfs  -i size=512  /dev/nvme1n1
+meta-data=/dev/nvme1n1           isize=512    agcount=4, agsize=13107200 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=0
+data     =                       bsize=4096   blocks=52428800, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=25600, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@ip-172-31-71-168 ~]# mkdir  /mnt/data
+[root@ip-172-31-71-168 ~]# mount  /dev/nvme1n1  /mnt/data/
+
+```
+
+### configue docker engine 
+
+```
+[root@ip-172-31-71-168 ~]# cd  /etc/sysconfig/
+[root@ip-172-31-71-168 sysconfig]# ls
+acpid       clock     docker          init        modules          nfs            rpc-rquotad  run-parts  sysstat.ioconf
+atd         console   docker-storage  irqbalance  netconsole       raid-check     rpcbind      selinux
+authconfig  cpupower  grub            keyboard    network          rdisc          rsyncd       sshd
+chronyd     crond     i18n            man-db      network-scripts  readonly-root  rsyslog      sysstat
+[root@ip-172-31-71-168 sysconfig]# cat  docker
+# The max number of open files for the daemon itself, and all
+# running containers.  The default value of 1048576 mirrors the value
+# used by the systemd service unit.
+DAEMON_MAXFILES=1048576
+
+# Additional startup options for the Docker daemon, for example:
+# OPTIONS="--ip-forward=true --iptables=true"
+# By default we limit the number of open files per container
+OPTIONS="--default-ulimit nofile=1024:4096 -H tcp://0.0.0.0:2375 -g  /mnt/data"
+
+# How many seconds the sysvinit script waits for the pidfile to appear
+# when starting the daemon.
+DAEMON_PIDFILE_TIMEOUT=10
+
+
+```
+
+### Docker  volume. for. container storgae 
+
+<img src="vol.png">
+
+
+###  container ephemral nature 
+
+<img src="eph.png">
+
+### creating volume 
+
+```
+❯ docker   volume  create  ashuvol1
+ashuvol1
+❯ docker   volume  ls
+DRIVER    VOLUME NAME
+local     ashuvol1
+
+
+```
+### creating a temp container 
+
+```
+❯ docker  run -it  --rm   --name ashucc1  -v   ashuvol1:/store:rw   alpine  sh
+/ # 
+/ # 
+/ # cd  /store/
+/store # ls
+/store # mkdir  hello world  this is docker  volume  
+/store # ls
+docker  hello   is      this    volume  world
+/store # 
+
+
+```
+
+### sharing data with diff cont
+
+```
+❯ docker  run -it --name x1111 -v  ashuvol1:/mnt/do:ro    oraclelinux:8.3  bash
+[root@da80cc26d314 /]# 
+[root@da80cc26d314 /]# 
+[root@da80cc26d314 /]# 
+[root@da80cc26d314 /]# cd  /mnt/do/
+[root@da80cc26d314 do]# ls
+docker  hello  is  this  volume  world
+[root@da80cc26d314 do]# mkdir  hii
+mkdir: cannot create directory 'hii': Read-only file system
+[root@da80cc26d314 do]# 
+
+
+
+```
+
+## volume history 
+
+```
+0302  docker   volume  create  ashuvol1
+10303  docker   volume  ls
+10304  docker   volume  inspect  swativol1
+10305  docker   volume  ls
+10306  docker  run -it  --rm   --name ashucc1  -v   ashuvol1:/store:rw   alpine  sh 
+10307  docker  start  ashucc1
+10308  docker  ps 
+10309  docker  rm ashucc1  -f
+10310  docker  volume  ls
+10311  docker  run -it  --rm   --name ashucc1  -v   ashuvol1:/store:rw   alpine  sh 
+10312  docker  run -it  --rm   --name ashucc11  -v   ashuvol1:/store:rw   alpine  sh 
+10313  history
+10314  docker  run -it --name x1 -v  ashuvol1:/mnt/do:ro    oraclelinux:8.3  bash 
+10315  docker  run -it --name x1111 -v  ashuvol1:/mnt/do:ro    oraclelinux:8.3  bash 
+
+```
+
+
+
+
+
+
