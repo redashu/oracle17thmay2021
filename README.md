@@ -118,5 +118,180 @@ b760a59e74d3   6 minutes ago   /bin/sh -c #(nop)  MAINTAINER ashutoshh@linu…  
 
 ```
 
+###  deploying web application 
+
+<img src="webappdep.png">
+
+
+### checking 
+```
+
+❯ docker  run  -dit   --name  ashuwebapp1    -p    1234:80   ashuhttpd:18thmay2021v1
+e07238006c603a4b7034fbc1d553879d8ce49cdcc4b2220e7a2587744d9934ce
+❯ docker  ps
+CONTAINER ID   IMAGE                     COMMAND                CREATED              STATUS              PORTS                  NAMES
+ff61f527e0f9   dipshttpd:v1              "httpd -DFOREGROUND"   3 seconds ago        Up 1 second         0.0.0.0:4444->80/tcp   dipswebapp1
+4da5ecf12dd6   srini:v18052021           "httpd -DFOREGROUND"   5 seconds ago        Up 2 seconds        0.0.0.0:1476->80/tcp   sriniwebapp1
+f41eae824afa   sandiphttpd2:v1           "httpd -DFOREGROUND"   5 seconds ago        Up 2 seconds        0.0.0.0:3223->80/tcp   sandipwebapp1
+9ba39b8685cd   swatihttpd:v1             "httpd -DFOREGROUND"   5 seconds ago        Up 2 seconds        0.0.0.0:1703->80/tcp   swatiwebapp1
+e07238006c60   ashuhttpd:18thmay2021v1   "httpd -DFOREGROUND"   6 seconds ago        Up 4 seconds        0.0.0.0:1234->80/tcp   ashuwebapp1
+e83b185a8615   mahihttpd:18thmay2021v1   "httpd -DFOREGROUND"   About a minute ago   Up About a minute   0.0.0.0:1111->80/tcp   mahiwebapp1
+
+
+```
+
+## Image transfer 
+
+<img src="img_trs.png">
+
+### registry type 
+
+<img src="regtype.png">
+
+### Docker image name reality 
+
+<img src="img_name.png">
+
+#### more example 
+
+<img src="nameimg.png">
+
+## pushing image to docker hub 
+
+### tag
+
+```
+docker   tag  ashuhttpd:18thmay2021v1   dockerashu/ashuhttpd:18thmay2021v1
+```
+
+### login 
+
+```
+❯ docker  login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: dockerashu
+Password: 
+Login Succeeded
+
+```
+
+### push 
+
+```
+
+ docker  push dockerashu/ashuhttpd:18thmay2021v1
+The push refers to repository [docker.io/dockerashu/ashuhttpd]
+c0cf451ba316: Pushed 
+7461488bed39: Pushed 
+02a3a073ed48: Mounted from library/oraclelinux 
+18thmay2021v1: digest: sha256:ea0e3ba4881799c0254f2c9f8eb8ef5b3ad6b1815d52352cd595b5d8c7489c8b size: 950
+
+```
+
+### logout for safety reason
+
+```
+ docker  logout
+Removing login credentials for https://index.docker.io/v1/
+
+```
+
+## Docker summary sofar 
+
+<img src="doc_sum.png">
+
+# Docker networking 
+
+## checking docker0 interface 
+
+```
+[ec2-user@ip-172-31-71-168 ~]$ ifconfig docker0
+docker0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        inet6 fe80::42:86ff:fe81:1950  prefixlen 64  scopeid 0x20<link>
+        ether 02:42:86:81:19:50  txqueuelen 0  (Ethernet)
+        RX packets 41561  bytes 31327285 (29.8 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 73145  bytes 856663525 (816.9 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        
+ ```
+ 
+ 
+ ### Docker network understanding 
+ 
+ <img src="dnet.png">
+ 
+ ### checking container IP 
+ 
+ ```
+  docker  inspect   ashuwebapp1  --format='{{.NetworkSettings.IPAddress}}'
+172.17.0.3
+
+
+```
+
+### checking ip from inside container as well
+
+```
+❯ docker  exec  -it  ashuwebapp1  bash
+[root@e07238006c60 /]# 
+[root@e07238006c60 /]# ifconfig
+bash: ifconfig: command not found
+[root@e07238006c60 /]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+34: eth0@if35: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:ac:11:00:03 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.3/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+       
+ ```
+ 
+ ### nat in docker 
+ 
+ ```
+ ❯ docker  run -itd  --name ashux1  alpine ping google.com
+54b3bc88b806349cff1c02da1207535c7426f12c2dc5d4ae857cfb4ffee61d4e
+❯ docker  exec -it ashux1 sh
+/ # ifconfig 
+eth0      Link encap:Ethernet  HWaddr 02:42:AC:11:00:02  
+          inet addr:172.17.0.2  Bcast:172.17.255.255  Mask:255.255.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:24 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:19 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:2112 (2.0 KiB)  TX bytes:1582 (1.5 KiB)
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+/ # ping  172.17.0.2
+PING 172.17.0.2 (172.17.0.2): 56 data bytes
+64 bytes from 172.17.0.2: seq=0 ttl=255 time=0.063 ms
+64 bytes from 172.17.0.2: seq=1 ttl=255 time=0.071 ms
+^C
+--- 172.17.0.2 ping statistics ---
+2 packets transmitted, 2 packets received, 0% packet loss
+round-trip min/avg/max = 0.063/0.067/0.071 ms
+/ # ping  fb.com
+PING fb.com (157.240.229.35): 56 data bytes
+64 bytes from 157.240.229.35: seq=0 ttl=50 time=0.888 ms
+64 bytes from 157.240.229.35: seq=1 ttl=50 time=0.744 ms
+64 bytes from 157.240.229.35: seq=2 ttl=50 time=0.741 ms
+^C
+--- fb.com ping statistics ---
+3 packets transmitted, 3 packets received, 0% packet loss
+round-trip min/avg/max = 0.741/0.791/0.888 ms
+/ # exit
+
+```
 
 
