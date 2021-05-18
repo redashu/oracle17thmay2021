@@ -1,3 +1,17 @@
-## Docker & Kubernets content of live session you can check in day1 to day5 branches
+## Docker day 1 revision 
 
-## Enjoy Learning 
+
+### COntainer reality 
+
+<img src="real_cont.png">
+
+
+### more closure look to container 
+
+<img src="conte.png">
+
+###  Docker components 
+
+<img src="compo.png">
+
+
