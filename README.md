@@ -294,4 +294,180 @@ round-trip min/avg/max = 0.741/0.791/0.888 ms
 
 ```
 
+## Docker bridges 
+
+### no of bridge 
+
+<img src="br.png">
+
+### checking containers connect with docker0
+
+```
+❯ docker  network  inspect  1f69eada5a46
+[
+    {
+        "Name": "bridge",
+        "Id": "1f69eada5a46e617b4ff3afb7305c22e25655a672083d05a4905442889f6c6a6",
+        "Created": "2021-05-18T04:15:15.844473296Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16",
+                    "Gateway": "172.17.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "1ba98e11373fa89b5790d365136b66eca98c074f24cf20ed005df085676208e7": {
+                "Name": "ashux1",
+                "EndpointID": "2243fc1ef09f72541b8023b4368f889221771382ada47570607e184ead89f27f",
+                "MacAddress": "02:42:ac:11:00:04",
+                "IPv4Address": "172.17.0.4/16",
+                "IPv6Address": ""
+            },
+            "850ee0d298f11b4a9ae0d024dc0a87d939fb50bfac6bce2e81e89d3f25915e6f": {
+                "Name": "swativ2",
+                "EndpointID": "50e1b60de3f369c47fac68be0d7be1355ce0a284d74463e292680008c67f243c",
+                "MacAddress": "02:42:ac:11
+                
+                
+   ```
+   
+   
+### port forwarding 
+
+<img src="portf.png">
+
+
+### creating docker network bridge 
+
+```
+❯ docker  network  ls
+NETWORK ID     NAME      DRIVER    SCOPE
+1f69eada5a46   bridge    bridge    local
+612ea4c2b4a0   host      host      local
+d13a3ba33cce   none      null      local
+❯ docker  network  create  ashubr1  --subnet=192.168.100.0/24
+d7f8b6554c57b6767b6423ded8927c820370edffaa83308deef15eb16a212a5a
+❯ docker  network  ls
+NETWORK ID     NAME         DRIVER    SCOPE
+8a7e60b11c40   abhinavbr1   bridge    local
+d7f8b6554c57   ashubr1      bridge    local
+1f69eada5a46   bridge       bridge    local
+612ea4c2b4a0   host         host      local
+9207425a8456   jazzbr1      bridge    local
+d13a3ba33cce   none         null      local
+7d5829fd8b99   swatibr1     bridge    local
+
+
+```
+
+### creating container in my custom bridge 
+
+```
+❯ docker  network  ls
+NETWORK ID     NAME      DRIVER    SCOPE
+1f69eada5a46   bridge    bridge    local
+612ea4c2b4a0   host      host      local
+d13a3ba33cce   none      null      local
+❯ docker  network  create  ashubr1  --subnet=192.168.100.0/24
+d7f8b6554c57b6767b6423ded8927c820370edffaa83308deef15eb16a212a5a
+❯ docker  network  ls
+NETWORK ID     NAME         DRIVER    SCOPE
+8a7e60b11c40   abhinavbr1   bridge    local
+d7f8b6554c57   ashubr1      bridge    local
+1f69eada5a46   bridge       bridge    local
+612ea4c2b4a0   host         host      local
+9207425a8456   jazzbr1      bridge    local
+d13a3ba33cce   none         null      local
+7d5829fd8b99   swatibr1     bridge    local
+
+```
+
+### container with static ip 
+
+```
+❯ docker  run  -itd --name ashuc2  --network   ashubr1 --ip 192.168.100.50   alpine ping fb.com
+b749010bee495e3f93adfaa70ac60613ccf486cee173294638ca09d047804a58
+❯ docker  network  inspect  ashubr1
+[
+    {
+        "Name": "ashubr1",
+        "Id": "d7f8b6554c57b6767b6423ded8927c820370edffaa83308deef15eb16a212a5a",
+        "Created": "2021-05-18T09:32:53.162285365Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "192.168.100.0/24"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "66fbcfffcd633b50eb04fca8bb667a7226a16b0267fe5b7bea73c1c982e6f5d9": {
+                "Name": "ashuc1",
+                "EndpointID": "358b195d893af1ea9cc1a049757cfb7e75a9e86afec53751a9bde052462747ce",
+                "MacAddress": "02:42:c0:a8:64:02",
+                "IPv4Address": "192.168.100.2/24",
+                "IPv6Address": ""
+            },
+            "b749010bee495e3f93adfaa70ac60613ccf486cee173294638ca09d047804a58": {
+                "Name": "ashuc2",
+                "EndpointID": "9d2d09d4b629afa7e3c5bd086a7ccb5588ecb85fb9b5e43be7fbec2299d19b53",
+                "MacAddress": "02:42:c0:a8:64:32",
+                "IPv4Address": "192.168.100.50/24",
+                "IPv6Address": ""
+
+```
+
+### checking connection 
+
+```
+❯ docker  exec  -it  ashuc1  sh
+/ # ping 192.168.100.50
+PING 192.168.100.50 (192.168.100.50): 56 data bytes
+64 bytes from 192.168.100.50: seq=0 ttl=255 time=0.145 ms
+64 bytes from 192.168.100.50: seq=1 ttl=255 time=0.111 ms
+^C
+--- 192.168.100.50 ping statistics ---
+2 packets transmitted, 2 packets received, 0% packet loss
+round-trip min/avg/max = 0.111/0.128/0.145 ms
+/ # 
+/ # 
+/ # ping ashuc2
+PING ashuc2 (192.168.100.50): 56 data bytes
+64 bytes from 192.168.100.50: seq=0 ttl=255 time=0.141 ms
+64 bytes from 192.168.100.50: seq=1 ttl=255 time=0.118 ms
+64 bytes from 192.168.100.50: seq=2 ttl=255 time=0.121 ms
+^C
+--- ashuc2 ping statistics ---
+3 packets transmitted, 3 packets received, 0% packet loss
+round-trip min/avg/max = 0.118/0.126/0.141 ms
+/ # exit
+
+```
+
 
