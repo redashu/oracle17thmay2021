@@ -311,4 +311,125 @@ yogipod       1/1     Running        0          11m     192.168.34.2      minion
 
 ```
 
+###  describe 
+
+```
+❯ kubectl  describe po  ashupod-1
+Name:         ashupod-1
+Namespace:    default
+Priority:     0
+Node:         minion2/172.31.76.167
+Start Time:   Wed, 19 May 2021 16:03:46 +0530
+Labels:       <none>
+Annotations:  cni.projectcalico.org/podIP: 192.168.179.195/32
+              cni.projectcalico.org/podIPs: 192.168.179.195/32
+Status:       Running
+IP:           192.168.179.195
+IPs:
+  IP:  192.168.179.195
+Containers:
+  ashuc1:
+    Container ID:   docker://71af88adf66b0600915874f8e30fd5ce9aab58d7cd214cee68d030e2fe15f2c4
+    Image:          dockerashu/ashuhttpd:18thmay2021v1
+    Image ID:       docker-pullable://dockerashu/ashuhttpd@sha256:ea0e3ba4881799c0254f2c9f8eb8ef5b3ad6b1815d52352cd595b5d8c7489c8b
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Wed, 19 May 2021 16:
+      
+ ```
+ 
+ 
+ ### accessing container inside pod 
+ 
+ ```
+ ❯ kubectl   exec  -it   ashupod-1  -- bash
+[root@ashupod-1 /]# 
+[root@ashupod-1 /]# 
+[root@ashupod-1 /]# 
+[root@ashupod-1 /]# ls
+bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+[root@ashupod-1 /]# uname -r
+4.14.231-173.361.amzn2.x86_64
+[root@ashupod-1 /]# cat  /etc/os-release 
+NAME="Oracle Linux Server"
+VERSION="8.3"
+ID="ol"
+ID_LIKE="fedora"
+VARIANT="Server"
+VARIANT_ID="server"
+VERSION_ID="8.3"
+PLATFORM_ID="platform:el8"
+PRETTY_NAME="Oracle Linux Server 8.3"
+ANSI_COLOR="0;31"
+CPE_NAME="cpe:/o:oracle:linux:8:3:server"
+HOME_URL="https://linux.oracle.com/"
+BUG_REPORT_URL="https://bugzilla.oracle.com/"
+
+```
+
+### accessing pod app 
+
+```
+❯ kubectl  port-forward  ashupod-1   1234:80
+Forwarding from 127.0.0.1:1234 -> 80
+Forwarding from [::1]:1234 -> 80
+Handling connection for 1234
+Handling connection for 1234
+
+```
+
+### deleting pod
+
+```
+❯ kubectl  delete  pods  ashupod-1
+pod "ashupod-1" deleted
+❯ kubectl  get  po
+NAME        READY   STATUS    RESTARTS   AGE
+dipspod-1   1/1     Running   0          57m
+jazzpod-1   1/1     Running   0          59m
+mahi-1      1/1     Running   0          60m
+mypod1      1/1     Running   0          58m
+sandip-1    1/1     Running   0          60m
+srini-1     1/1     Running   0          51m
+yogipod     1/1     Running   0          64m
+
+```
+
+## Understanding docker desktop with minikube 
+
+<img src="minikube.png">
+
+### minikube on mac
+
+```
+❯ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 60.3M  100 60.3M    0     0  9505k      0  0:00:06  0:00:06 --:--:-- 12.3M
+❯ sudo install minikube-darwin-amd64 /usr/local/bin/minikube
+Password:
+❯ 
+❯ minikube  version
+minikube version: v1.20.0
+commit: c61663e942ec43b20e8e70839dcca52e44cd85ae
+
+```
+
+### minikube start
+
+```
+❯ minikube  start  --driver=docker
+😄  minikube v1.20.0 on Darwin 11.2.3
+✨  Using the docker driver based on user configuration
+👍  Starting control plane node minikube in cluster minikube
+🚜  Pulling base image ...
+    > gcr.io/k8s-minikube/kicbase...: 358.10 MiB / 358.10 MiB  100.00% 8.40 MiB
+    > gcr.io/k8s-minikube/kicbase...: 35.87 MiB / 358.10 MiB  10.02% 1.66 MiB p
+
+
+
+```
+
+
 
