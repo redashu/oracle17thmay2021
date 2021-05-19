@@ -126,5 +126,41 @@ boot  etc  lib   lib64  media   myhostetc  opt    root  sbin  sys  usr
 <img src="minion1.png">
 
 
+## Kube-apiserver
+
+<img src="api.png">
+
+## kube-schedular 
+
+<img src="sche.png">
+
+### kube-controller-manager reality 
+
+<img src="kcm.png">
+
+### Node-controller 
+
+<img src="nc.png">
+
+### Replication-controller 
+
+<img src="rc.png">
+
+### etcd the brain of k8s
+
+<img src="etcd.png">
+
+### CNI 
+
+<img src="cni.png">
+
+### CNI bridge on minion side
+
+<img src="bridge.png">
+
+
+### kube-proxy -- to maintain communication b/w container across minion node
+
+<img src="proxy.png">
 
 
