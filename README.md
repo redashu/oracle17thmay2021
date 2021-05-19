@@ -170,3 +170,86 @@ boot  etc  lib   lib64  media   myhostetc  opt    root  sbin  sys  usr
 
 
 
+
+# K8s setup 
+
+## methods 
+
+<img src="setup.png">
+
+### kubectl installation on Mac as k8s client software 
+
+```
+  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl"
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   154  100   154    0     0    437      0 --:--:-- --:--:-- --:--:--   437
+100 53.2M  100 53.2M    0     0  9969k      0  0:00:05  0:00:05 --:--:-- 12.4M
+❯ chmod +x ./kubectl
+❯ sudo mv ./kubectl /usr/local/bin/kubectl
+Password:
+❯ sudo chown root: /usr/local/bin/kubectl
+❯ kubectl version --client
+Client Version: version.Info{Major:"1", Minor:"21", GitVersion:"v1.21.1", GitCommit:"5e58841cce77d4bc13713ad2b91fa0d961e69192", GitTreeState:"clean", BuildDate:"2021-05-12T14:18:45Z", GoVersion:"go1.16.4", Compiler:"gc", Platform:"darwin/amd64"}
+
+```
+
+### SSL token on master node
+
+<img src="token.png">
+
+### checking cluster / master node / control plane  connection 
+
+```
+ kubectl   cluster-info   --kubeconfig=admin.conf
+Kubernetes control plane is running at https://52.20.84.60:6443
+CoreDNS is running at https://52.20.84.60:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+```
+
+
+### antoher way 
+
+```
+❯ kubectl  get  nodes    --kubeconfig=admin.conf
+NAME          STATUS   ROLES                  AGE   VERSION
+master-node   Ready    control-plane,master   68m   v1.21.1
+minion1       Ready    <none>                 67m   v1.21.1
+minion2       Ready    <none>                 67m   v1.21.1
+
+```
+
+### configure admin.conf permentaly 
+
+<img src="admin.png">
+
+###
+
+```
+❯ cp  -v  admin.conf  ~/.kube/config
+admin.conf -> /Users/fire/.kube/config
+❯ kubectl   get   nodes
+NAME          STATUS   ROLES                  AGE   VERSION
+master-node   Ready    control-plane,master   81m   v1.21.1
+minion1       Ready    <none>                 80m   v1.21.1
+minion2       Ready    <none>                 80m   v1.21.1
+
+```
+
+### build |. release |. deploy 
+
+<img src="k8sdep.png">
+
+## Introduction to POD 
+
+<img src="pod.png">
+
+### POd in more details 
+
+
+<img src="pod1.png">
+
+
