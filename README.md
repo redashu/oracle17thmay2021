@@ -164,3 +164,9 @@ boot  etc  lib   lib64  media   myhostetc  opt    root  sbin  sys  usr
 <img src="proxy.png">
 
 
+### k8s drops docker support. -- reality 
+
+<img src="dockerremove.png">
+
+
+
