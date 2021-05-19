@@ -108,5 +108,23 @@ boot  etc  lib   lib64  media   myhostetc  opt    root  sbin  sys  usr
 
 ```
 
+## App deployment issues with containers
+
+<img src="appdep.png">
+
+
+# Orchestration engine 
+
+<img src="orch.png">
+
+## K8s arch 1 
+
+<img src="k8sarch1.png">
+
+## Minion understanding 
+
+<img src="minion1.png">
+
+
 
 
