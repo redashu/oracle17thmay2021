@@ -252,4 +252,63 @@ minion2       Ready    <none>                 80m   v1.21.1
 
 <img src="pod1.png">
 
+### First Pod 
+
+<img src="podcreate.png">
+
+### dry-run 
+
+```
+❯ kubectl  apply   -f  ashupod1.yaml  --dry-run=client
+pod/ashupod-1 created (dry run)
+
+```
+
+### Deploy pod 
+
+```
+❯ kubectl  apply   -f  ashupod1.yaml
+pod/ashupod-1 created
+❯ kubectl  get   pods
+NAME         READY   STATUS              RESTARTS   AGE
+ashupod-1    0/1     ContainerCreating   0          7s
+swatipod-1   0/1     ContainerCreating   0          2s
+yogipod      1/1     Running             0          3m22s
+❯ kubectl  get   pods
+NAME          READY   STATUS              RESTARTS   AGE
+abhipod-1     1/1     Running             0          8s
+ashupod-1     1/1     Running             0          21s
+
+```
+
+### more info about pod 
+
+```
+❯ kubectl  get   pod  ashupod-1   -o wide
+NAME        READY   STATUS    RESTARTS   AGE     IP                NODE      NOMINATED NODE   READINESS GATES
+ashupod-1   1/1     Running   0          7m38s   192.168.179.195   minion2   <none>           <none>
+
+```
+
+###
+
+```
+❯ kubectl  get   pod   -o wide
+NAME          READY   STATUS         RESTARTS   AGE     IP                NODE      NOMINATED NODE   READINESS GATES
+abhipod-1     1/1     Running        0          8m13s   192.168.179.198   minion2   <none>           <none>
+ashupod-1     1/1     Running        0          8m26s   192.168.179.195   minion2   <none>           <none>
+dhirajpod-1   1/1     Running        0          8m17s   192.168.179.197   minion2   <none>           <none>
+dipspod-1     1/1     Running        0          4m47s   192.168.34.5      minion1   <none>           <none>
+jazzpod-1     1/1     Running        0          7m14s   192.168.34.4      minion1   <none>           <none>
+mahi-1        1/1     Running        0          8m11s   192.168.179.199   minion2   <none>           <none>
+mypod1        1/1     Running        0          6m4s    192.168.179.201   minion2   <none>           <none>
+naveenpod-1   1/1     Running        0          4m41s   192.168.34.6      minion1   <none>           <none>
+ramanpod-1    1/1     Running        0          7m54s   192.168.179.200   minion2   <none>           <none>
+sandip-1      1/1     Running        0          8m10s   192.168.34.3      minion1   <none>           <none>
+srini-1       0/1     ErrImagePull   0          61s     192.168.179.203   minion2   <none>           <none>
+swatipod-1    1/1     Running        0          8m21s   192.168.179.196   minion2   <none>           <none>
+yogipod       1/1     Running        0          11m     192.168.34.2      minion1   <none>           <none>
+
+```
+
 
