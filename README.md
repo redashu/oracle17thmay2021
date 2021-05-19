@@ -1,3 +1,12 @@
-## Docker & Kubernets content of live session you can check in day1 to day5 branches
+# docker tips
 
-## Enjoy Learning 
+## On docker host 
+
+### non root user can't use docker cli so to do that 
+
+```
+ usermod -aG docker  ec2-user
+```
+
+### here ec2-user is a non root user 
+
