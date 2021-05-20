@@ -352,5 +352,129 @@ ashurc-1   1         1         1       31m
 
 ```
 
+### Multi stage dockerfile with tomcat example 
+
+```
+# stage 1 just for build java project into .war file s
+FROM oraclelinux:8.3  as Builder  
+MAINTAINER ashutoshh@linux.com
+RUN dnf install java-1.8.0-openjdk.x86_64 -y
+# JDK installing 
+RUN dnf  install maven -y
+# maven in an build automation tool for java project
+RUN mkdir  /myjavawebapp
+WORKDIR  /myjavawebapp 
+# to change directory during image build time permanently
+COPY  .  . 
+# first . all source data  
+RUN mvn clean package 
+# for automated building of java project 
+# as an output we get .war file as entire code 
+
+# stage 2 copy .war into tomcat 
+FROM tomcat
+MAINTAINER ashutoshh@.linux.com , 9509957594
+RUN mkdir  /webcode 
+COPY --from=Builder  /myjavawebapp   /webcode
+RUN cp -rf  /webcode/target/WebApp.war  /usr/local/tomcat/webapps/
+RUN  rm -rf /webcode/* 
+EXPOSE 8080
+# from above stage we are only copying data 
+# /myjavawbeapp  to  /webcode in new image 
+
+```
+
+
+### building image 
+
+```
+ docker build  -t  dockerashu/jsp:v1122  .
+ 
+```
+
+```
+ docker  login 
+10061  docker push dockerashu/jsp:v1122
+10062  docker logout 
+
+```
+
+## pushing image to ACR 
+
+```
+docker  tag  alpine:latest   docker.io/dockerashu/alpine:v1
+❯ 
+❯ docker  tag  alpine:latest   ashuoracle.azurecr.io/alpine:v1
+❯ docker  login   ashuoracle.azurecr.io
+Username: ashuoracle
+Password: 
+Login Succeeded
+❯ docker  push  ashuoracle.azurecr.io/alpine:v1
+The push refers to repository [ashuoracle.azurecr.io/alpine]
+b2d5eeeaba3a: Pushed 
+v1: digest: sha256:def822f9851ca422481ec6fee59a9966f12b351c62ccb9aca841526ffaa9f748 size: 528
+❯ docker  logout   ashuoracle.azurecr.io
+Removing login credentials for ashuoracle.azurecr.io
+
+```
+
+## Deploying private registy image into K8s need --- Secret 
+
+## secret 
+
+<img src="secret.png">
+
+### creating secret 
+
+```
+kubectl  create  secret  docker-registry   azuresec  --docker-server=ashuoracle.azurecr.io  --docker-username=ashuoracle  --docker-password=UklRac5f2tj7=N4QvEWYSHD
+secret/azuresec created
+
+```
+
+### showing secret 
+
+```
+❯ kubectl  get  secret
+NAME                  TYPE                                  DATA   AGE
+azuresec              kubernetes.io/dockerconfigjson        1      33s
+default-token-t52mp   kubernetes.io/service-account-token   3      27h
+
+```
+
+### app deloy 
+
+```
+❯ kubectl  apply -f  alp.yml
+pod/ashupodalp created
+❯ kubectl  get   po
+NAME                   READY   STATUS             RESTARTS   AGE
+abhipodalp             1/1     Running            0          20s
+abhirc-1-lj4n2         1/1     Running            0          33m
+abhirc-1-rblvq         1/1     Running            0          33m
+ashupodalp             1/1     Running            0          5s
+ashurc-1-hcczx         1/1     Running            0          34m
+dhirajtomcatrc-74vng   1/1     Running            0          31m
+dhirajtomcatrc-t62t5   1/1     Running            0          31m
+dipsrc-1-m2cfn         1/1     Running            0          33m
+mahipodalp             0/1     ImagePullBackOff   0          10m
+myyogiapp-gj8xq        0/1     ImagePullBackOff   0          13m
+naveenrc-1-2799w       1/1     Running            0          33m
+ramanpodalp            1/1     Running            0          11m
+sandip-1-94cdc         1/1     Running            0          31m
+swatipodalp            1/1     Running            0          15m
+swatirc-1-csknx        1/1     Running            0          33m
+❯ kubectl  logs  -f  ashupodalp
+PING fb.com (157.240.229.35): 56 data bytes
+64 bytes from 157.240.229.35: seq=0 ttl=51 time=0.564 ms
+64 bytes from 157.240.229.35: seq=1 ttl=51 time=0.596 ms
+64 bytes from 157.240.229.35: seq=2 ttl=51 time=0.655 ms
+64 bytes from 157.240.229.35: seq=3 ttl=51 time=2.943 ms
+64 bytes from 157.240.229.35: seq=4 ttl=51 time=0.594 ms
+64 bytes from 157.240.229.35: seq=5 ttl=51 time=0.641 ms
+64 bytes from 157.240.229.35: seq=6 ttl=51 time=0.588 ms
+
+```
+
 
 
