@@ -170,4 +170,110 @@ ashupod111    1/1     Running   0          10s   192.168.34.13   minion1   <none
 <img src="label.png">
 
 
+## Nodeport service 
+
+<img src="np.png">
+
+## checking label 
+
+```
+❯ kubectl  get   po  ashupod111  --show-labels
+NAME         READY   STATUS    RESTARTS   AGE   LABELS
+ashupod111   1/1     Running   0          88m   x=helloashu
+❯ kubectl  get   po    --show-labels
+NAME               READY   STATUS    RESTARTS   AGE   LABELS
+abhinavpod2        1/1     Running   0          88m   run=abhinavpod2
+ashupod111         1/1     Running   0          88m   x=helloashu
+dhirajnginxpod1    1/1     Running   0          79m   run=dhirajnginxpod1
+dipspod11          1/1     Running   0          82m   run=dipspod11
+jazzpod1           1/1     Running   0          88m   run=jazzpod1
+mahiwebpod-1       1/1     Running   0          81m   run=mahiwebpod-1
+naveenlistingpod   1/1     Running   0          82m   run=naveenlistingpod
+naveenpod1         1/1     Running   0          87m   run=naveenpod1
+ramanpod1          1/1     Running   0          87m   run=ramanpod1
+revathipod1        1/1     Running   0          80m   run=revathipod1
+sandip111          1/1     Running   0          88m   run=sandip111
+srinipod111        1/1     Running   0          72m   run=srinipod111
+swatingnixpod1     1/1     Running   0          88m   true=helloswati17
+venkat123          1/1     Running   0          76m   run=venkat123
+yogipod1           1/1     Running   0          82m   run=yogipod1
+
+```
+
+### creating nodeport service 
+
+```
+❯ kubectl   create   service  nodeport  ashusvc1  --tcp 1234:80  --dry-run=client -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashusvc1
+  name: ashusvc1
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: ashusvc1
+  type: NodePort
+status:
+  loadBalancer: {}
+❯ kubectl   create   service  nodeport  ashusvc1  --tcp 1234:80  --dry-run=client -o yaml   >nginx_svc1.yml
+
+
+```
+
+
+### nodeport done
+
+<img src="svcnodecr.png">
+
+
+## for better practise 
+
+<img src="svcpod.png">
+
+### svc and pod history 
+
+```
+  kubectl   create   service  nodeport  ashusvc1  --tcp 1234:80  --dry-run=client -o yaml  
+10080  kubectl   create   service  nodeport  ashusvc1  --tcp 1234:80  --dry-run=client -o yaml   >nginx_svc1.yml
+10081  ls
+10082  kubectl  apply -f  nginx_svc1.yml
+10083  kubectl   get   service  
+10084  history
+10085  kubectl   get   service  
+10086  kubectl   get   svc
+10087  kubectl  get  po 
+10088  kubectl  exec -it  jazzpod1  -- bash 
+10089  history
+10090  kubectl  get  no
+10091  kubectl  get  po
+10092  kubectl  get  svc
+10093  kubectl  get  po 
+10094  kubectl  get  po ashupod111  --show-labels
+10095  kubectl  get  svc
+10096  kubectl  get  svc  ashusvc1 
+10097  kubectl  get  svc  ashusvc1 -o wide
+10098  history
+10099  kubectl  get  po ashupod111  --show-labels
+10100  kubectl  get  svc  ashusvc1 -o wide
+10101  history
+10102  kubectl  apply -f  nginx_svc1.yml
+10103  kubectl  get  po ashupod111  --show-labels
+10104  kubectl  get  svc  ashusvc1 -o wide
+10105  kubectl  apply -f  nginx_svc1.yml
+10106  kubectl  get  svc  ashusvc1 -o wide
+
+```
+
+### external loadbalancer concept 
+
+<img src="extbal.png">
+
+
 
