@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: ashupodalp # label of POD 
+  name: ashupodalp # name of POD 
+spec:
+  imagePullSecrets: # to define secrets
+  - name: azuresec # name of secret 
+  containers:
+  - image: ashuoracle.azurecr.io/alpine:v1 # image from ACR 
+    name: ashupodalp
+    command: ["/bin/sh","-c","ping fb.com"] # like in docker we give pp / same in k8s
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ReplicationController
+metadata: 
+ name: ashurc-1  # this is name of RC 
+spec:
+ replicas: 1 # no of pod you want to deploy 
+ template:
+  metadata:
+   labels:
+    x: helloashu1 # label of all the PODS by RC 
+  spec:
+   containers:
+   - image: dockerashu/jsp:v1122
+     name: ashuc1
+     ports:
+     - containerPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    x: helloashu1
+  name: ashusvc2
+spec:
+  ports:
+  - port: 1234
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    x: helloashu1
+  type: NodePort
+status:
+  loadBalancer: {}
