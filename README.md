@@ -275,5 +275,82 @@ status:
 
 <img src="extbal.png">
 
+# Introduction to RC 
+
+<img src="rc1.png">
+
+## RC file understanding 
+
+<img src="rcfile1.png">
+
+## Deploying RC 
+
+```
+❯ kubectl  apply -f  ashu-rc.yml
+replicationcontroller/ashurc-1 created
+❯ 
+❯ kubectl  get  replicationcontroller
+NAME         DESIRED   CURRENT   READY   AGE
+ashurc-1     1         1         1       10s
+dhirajrc-1   1         1         1       8s
+dipsrc-1     1         1         0       1s
+swatirc-1    1         1         1       32s
+venkat-rc1   1         1         1       10s
+
+```
+
+## to automatch label of pod -- create service using expose 
+
+```
+❯ kubectl   expose   rc  ashurc-1   --type NodePort --port 1234 --target-port 80 --name ashusvc2
+service/ashusvc2 exposed
+❯ kubectl  get  svc
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+ashusvc2     NodePort    10.109.211.167   <none>        1234:31604/TCP   20s
+
+```
+
+### appending in the same file where rc was there 
+
+```
+kubectl   expose   rc  ashurc-1   --type NodePort --port 1234 --target-port 80 --name ashusvc2  --dry-run=client -o yaml  
+10022  kubectl   expose   rc  ashurc-1   --type NodePort --port 1234 --target-port 80 --name ashusvc2  --dry-run=client -o yaml    >>ashu-rc.yml 
+
+```
+
+### scaling of pod by changing into RC file 
+
+```
+❯ kubectl apply -f ashu-rc.yml
+replicationcontroller/ashurc-1 configured
+service/ashusvc2 created
+❯ kubectl  get  rc
+NAME         DESIRED   CURRENT   READY   AGE
+abhirc-1     1         1         1       26m
+ashurc-1     2         2         2       27m
+
+```
+
+## checking rc and svc
+
+<img src="rcsvc.png">
+
+## scaling up and down without YAML file 
+
+```
+venkat-rc1   2         2         2       31m
+❯ kubectl  scale  rc   ashurc-1   --replicas=5
+replicationcontroller/ashurc-1 scaled
+❯ kubectl  get  rc   ashurc-1
+NAME       DESIRED   CURRENT   READY   AGE
+ashurc-1   5         5         5       31m
+❯ kubectl  scale  rc   ashurc-1   --replicas=1
+replicationcontroller/ashurc-1 scaled
+❯ kubectl  get  rc   ashurc-1
+NAME       DESIRED   CURRENT   READY   AGE
+ashurc-1   1         1         1       31m
+
+```
+
 
 
