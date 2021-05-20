@@ -132,5 +132,42 @@ v1: digest: sha256:a47c831e60b06b14a81d80552134c81245ef2e7f86920a0bf00f8daa4bb4f
 
 ```
 
+### saving file yaml and deploying to k8s cluster 
+
+```
+❯ kubectl  run   ashupod111  --image=dockerashu/ashunginx:v1 --port 80  --dry-run=client -o yaml   >nginxpod.yaml
+❯ ls
+nginxpod.yaml
+❯ ls
+nginxpod.yaml
+❯ kubectl apply -f  nginxpod.yaml
+pod/ashupod111 created
+❯ kubectl  get   po
+NAME          READY   STATUS    RESTARTS   AGE
+abhinavpod2   1/1     Running   0          12s
+ashupod111    1/1     Running   0          6s
+❯ kubectl  get   po  -o wide
+NAME          READY   STATUS    RESTARTS   AGE   IP              NODE      NOMINATED NODE   READINESS GATES
+abhinavpod2   1/1     Running   0          16s   192.168.34.12   minion1   <none>           <none>
+ashupod111    1/1     Running   0          10s   192.168.34.13   minion1   <none>           <none>
+
+```
+
+## Networking with service concept in k8s
+
+<img src="svc.png">
+
+### type of services 
+
+<img src="stype.png">
+
+### understanding svc to pod connection 
+
+<img src="svc2pod.png">
+
+### understanding label concept
+
+<img src="label.png">
+
 
 
