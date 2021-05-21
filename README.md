@@ -496,6 +496,182 @@ time.txt
 /mnt/oracle # exit
 
 ```
+## alpine and nginx container in single pod 
+
+<img src="alpp.png">
+
+
+
+## Webapp with DB 
+
+<img src="db.png">
+
+
+
+## WEb and DB deployment 
+
+### Database deployment 
+
+```
+❯ kubectl  create  deployment  ashudb  --image=mysql:5.6  --dry-run=client -o yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudb
+  name: ashudb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashudb
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashudb
+    spec:
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        resources: {}
+status: {}
+❯ kubectl  create  deployment  ashudb  --image=mysql:5.6  --dry-run=client -o yaml    >dbdep.yml
+
+```
+
+## ABout DB YAML 
+
+### creating storage from NFS 
+
+<img src="dbstorage.png">
+
+### creating secret 
+
+<img src="dbsec.png">
+
+### applied username and password in DB yaml 
+
+<img src="dbup.png">
+
+### creating service and change selector label also for DB pod 
+
+```
+❯ kubectl  create  service  clusterip  ashudbsvc --tcp  3306  --namespace ashuspace  --dry-run=client -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudbsvc
+  name: ashudbsvc
+  namespace: ashuspace
+spec:
+  ports:
+  - name: "3306"
+    port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: ashudbsvc
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+```
+
+### DB deploy 
+
+```
+10271  kubectl apply -f  dbdep.yml
+10272  kubectl  get  deploy 
+10273  kubectl  get  po
+10274  kubectl  logs  ashudb-5bbf866d6-fv9ns 
+❯ kubectl  get  svc
+NAME        TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+ashudbsvc   ClusterIP   10.102.226.96   <none>        3306/TCP   38s
+
+```
+
+# Webapp deployment to connect above db pod 
+
+### yaml for web app
+
+```
+ kubectl  create deployment  ashuwebapp  --image=wordpress:4.8-apache  --namespace=ashuspace --dry-run=client -o yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashuwebapp
+  name: ashuwebapp
+  namespace: ashuspace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashuwebapp
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashuwebapp
+    spec:
+      containers:
+      - image: wordpress:4.8-apache
+        name: wordpress
+        resources: {}
+status: {}
+
+```
+
+### time to connection webapp POd with DB pod 
+
+### concept 
+
+<img src="coredns.png">
+
+### db info passing to Webapp yaml
+
+<img src="dbinfo.png">
+
+### final web and db 
+
+<img src="webdb.png">
+
+## Deployment 
+
+```
+❯ kubectl apply -f  dbdep.yml
+deployment.apps/ashudb configured
+service/ashudbsvc configured
+deployment.apps/ashuwebapp created
+service/ashuwebsvc created
+❯ kubectl  get  deploy
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+ashudb       1/1     1            1           32m
+ashuwebapp   1/1     1            1           14s
+❯ kubectl  get  po
+NAME                          READY   STATUS    RESTARTS   AGE
+ashudb-5bbf866d6-fv9ns        1/1     Running   0          32m
+ashuwebapp-549c9498f4-v25ph   1/1     Running   0          22s
+❯ kubectl  get  svc
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+ashudbsvc    ClusterIP   10.102.226.96    <none>        3306/TCP         32m
+ashuwebsvc   NodePort    10.103.199.153   <none>        1234:31260/TCP   25s
+❯ kubectl  get  secret
+NAME                  TYPE                                  DATA   AGE
+ashudbsec             Opaque                                1      47m
+default-token-df4gv   kubernetes.io/service-account-token   3      7h12m
+
+```
+
+
+
 
 
 
