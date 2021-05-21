@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata: # Info about POD 
+  creationTimestamp: null
+  labels: # this is to define label of pod 
+    x: helloashu
+  name: ashupod111 # name of the Pod 
+spec:
+  containers:
+  - image: dockerashu/ashunginx:v1 # docker image from docker HUB 
+    name: ashupod111 # name of container 
+    ports: # nginx web server port 
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

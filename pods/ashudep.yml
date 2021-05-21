@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashuwebapp
+  name: ashuwebapp # name of deployment 
+  namespace: ashuspace # Namespace info 
+spec:
+  replicas: 3 # no of pod to be created BY RS 
+  selector:
+    matchLabels:
+      app: ashuwebapp
+  strategy: {}
+  template: # same concept of template as RC 
+    metadata:
+      creationTimestamp: null
+      labels: # label of POD 
+        app: ashuwebapp
+    spec:
+      containers:
+      - image: dockerashu/ashunginx:v2 # image from Docker hub 
+        name: ashunginx # name of container 
+        ports:
+        - containerPort: 80 # pod app port 
+        resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashusvc1
+  name: ashusvc1 # name of service 
+  namespace: ashuspace # namespace info 
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234 # service port 
+    protocol: TCP
+    targetPort: 80 # pod app port 
+  selector: # Pod finder using below given labels 
+   app: ashuwebapp # exactly same label as POD have 
+  type: LoadBalancer # loadbalancer type of service 
+  sessionAffinity: ClientIP
+status:
+  loadBalancer: {}
+
+
+

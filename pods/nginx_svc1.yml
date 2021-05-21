@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service # Kind is now changed 
+metadata:
+  creationTimestamp: null
+  labels: # label of service 
+    app: ashusvc1
+  name: ashusvc1 # name of service 
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234 # port number of service 
+    protocol: TCP
+    targetPort: 80 # port of POD where to forward traffic 
+  selector: # Pod Finder using below give label 
+    x: helloashu # this is label of my POD 
+  type: NodePort # type of service 
+status:
+  loadBalancer: {}
