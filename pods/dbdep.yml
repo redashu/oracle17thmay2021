@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudb
+  name: ashudb # name of Deployment 
+  namespace: ashuspace # namespace 
+spec:
+  replicas: 1 # pod number 
+  selector:
+    matchLabels:
+      app: ashudb
+  strategy: {}
+  template: # template to create pod 
+    metadata:
+      creationTimestamp: null
+      labels: # label of my pod 
+        app: ashudb
+    spec:
+      volumes: # to create volume 
+      - name: ashudbvol # volume name 
+        nfs: # source of volume storage is NFS 
+         server: 172.31.66.13 # IP of NFS 
+         path: /data/ashu # location on NFS server 
+      containers:
+      - image: mysql:5.6 # docker image 
+        name: mysql # name of container
+        ports:
+        - containerPort: 3306 # db port 
+        volumeMounts: # mounting volume 
+        - name: ashudbvol
+          mountPath: /var/lib/mysql/ # default mysql DB location 
+        env: # to Define or creat ENV var in cont 
+        - name: MYSQL_ROOT_PASSWORD 
+          valueFrom:
+           secretKeyRef: # reading password from Secret 
+            name: ashudbsec # name of secret 
+            key: sql_pass # key of secret 
+        resources: {}
+status: {}
+
+# creating CLusterIP service for DB pod
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudb
+  name: ashudb
+  namespace: ashuspace 
+spec:
+  ports:
+  - port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: ashudb
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+# Create deployment for WEbapp 
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashuwebapp
+  name: ashuwebapp # name of deployment 
+  namespace: ashuspace # namespace 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashuwebapp
+  strategy: {}
+  template: # template for pod creation 
+    metadata:
+      creationTimestamp: null
+      labels: # label of POD 
+        app: ashuwebapp
+    spec:
+      containers:
+      - image: wordpress:4.8-apache # docker image from Docker hub 
+        name: wordpress # container name 
+        ports:
+        - containerPort: 80 # webapp httpd port
+        env:
+        - name: WORDPRESS_DB_HOST # to get dbHost info 
+          value: ashudb # service name of mysql POD
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom: # reading password from Secret 
+           secretKeyRef:
+            name: ashudbsec # name of secret 
+            key: sql_pass # key of secret 
+        resources: {}
+status: {}
+
+# creating service for webapp pod  either Nodeport / LB type
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashuwebsvc
+  name: ashuwebsvc
+  namespace: ashuspace
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234
+    protocol: TCP
+    targetPort: 80
+  selector: # pod finder 
+    app: ashuwebapp # label of POD 
+  type: NodePort
+status:
+  loadBalancer: {}
+
+

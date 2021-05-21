@@ -1,0 +1,32 @@
+/* comment of css */
+
+h1 {
+    color: rgb(43, 226, 98);
+    font-weight: 200;
+    text-transform: uppercase;
+    border: dotted , yellowgreen; /* for entire h1 rectangle border*/
+    border-bottom: solid rgb(0, 0, 0);
+    border-width: 0, 5px;
+}
+
+body {
+
+    background-color: rgb(104, 102, 100);
+    color: gold;
+    font-family: 'Times New Roman';
+    
+}
+
+img {
+
+    height: 500px;
+   /* width: 500px; */
+    border-radius: 10%; /* to make image round from corners*/
+}
+
+.test1 {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+}
