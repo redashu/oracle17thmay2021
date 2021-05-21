@@ -351,6 +351,154 @@ REVISION  CHANGE-CAUSE
 
 ```
 
+## Session affinity / session stickyness IDea 
+
+<img src="affi.png">
+
+# Storage in K8s
+
+<img src="st.png">
+
+## link 
+
+[volumes](https://kubernetes.io/docs/concepts/storage/volumes/)
+
+## volume in examples
+
+<img src="vol.png">
+
+### volume type 
+
+<img src="voltype.png">
+
+### creating and mounting volume inside POD 
+
+<img src="volc.png">
+
+## deploy alpine pod with volume 
+
+```
+❯ kubectl  exec  -it  ashuemppod  -- sh
+/ # 
+/ # 
+/ # cd /mnt/oracle/
+/mnt/oracle # 
+/mnt/oracle # 
+/mnt/oracle # ls
+time.txt
+/mnt/oracle # cat  time.txt 
+Fri May 21 09:33:05 UTC 2021
+Fri May 21 09:33:10 UTC 2021
+Fri May 21 09:33:15 UTC 2021
+Fri May 21 09:33:20 UTC 2021
+Fri May 21 09:33:25 UTC 2021
+Fri May 21 09:33:30 UTC 2021
+Fri May 21 09:33:35 UTC 2021
+
+```
+
+## Multi container POD 
+
+<img src="mcpod.png">
+
+
+### example of mcpod 
+
+<img src="mcpod1.png">
+
+### deployment of mc pod 
+
+```
+❯ kubectl  apply -f  empvol.yml
+The Pod "ashuemppod" is invalid: spec.containers: Forbidden: pod updates may not add or remove containers
+❯ kubectl  replace -f  empvol.yml  --force
+pod "ashuemppod" deleted
+pod/ashuemppod replaced
+❯ kubectl  get   po
+NAME         READY   STATUS    RESTARTS   AGE
+ashuemppod   2/2     Running   0          9s
+❯ kubectl  describe  pod  ashuemppod
+Name:         ashuemppod
+Namespace:    ashuspace
+Priority:     0
+Node:         minion2/172.31.76.167
+Start Time:   Fri, 21 May 2021 15:27:06 +0530
+Labels:       run=ashuemppod
+Annotations:  cni.projectcalico.org/podIP: 192.168.179.220/32
+              cni.projectcalico.org/podIPs: 192.168.179.220/32
+Status:       Running
+IP:           192.168.179.220
+IPs:
+  IP:  192.168.179.220
+Containers:
+  ashuc1:
+    Container ID:   docker://596c5430c0cc1fed55924deb41d05290913879d1a83017bc0b2b46925f9f7a34
+    Image:          nginx
+    Image ID:       docker-pullable://nginx@sha256:df13abe416e37eb3db4722840dd479b00ba193ac6606e7902331dcea50f4f1f2
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Fri, 21 May 2021 15:27:07 +0530
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /usr/share/nginx/html/ from ashuvol1 (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-9nf8s (ro)
+  ashuemppod:
+    Container ID:  docker://4edaef71ca2640688ead0da46f63cefc8e4b5389fcdb66d9fcce2c0bde6c179d
+    Image:         alpine
+    Image ID:      docker-pullable://ashuoracle.azurecr.io/alpine@sha256:def822f9851ca422481ec6fee59a9966f12b351c62ccb9aca841526ffaa9f748
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/sh
+      -c
+      while true;do date >>/mnt/oracle
+      
+      
+```
+
+
+### creating service 
+
+```
+❯ kubectl get  po
+NAME         READY   STATUS    RESTARTS   AGE
+ashuemppod   2/2     Running   0          2m28s
+❯ kubectl  expose pod  ashuemppod  --type NodePort --port 1233 --target-port 80 --name x1
+service/x1 exposed
+❯ kubectl  get  svc
+NAME   TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+x1     NodePort   10.103.197.41   <none>        1233:31215/TCP   5s
+
+```
+
+### access container 
+
+```
+❯ kubectl  exec  -it  ashuemppod  -c ashuc1    -- bash
+root@ashuemppod:/# 
+root@ashuemppod:/# 
+root@ashuemppod:/# cd /usr/share/nginx/
+root@ashuemppod:/usr/share/nginx# cd html/
+root@ashuemppod:/usr/share/nginx/html# ls
+time.txt
+root@ashuemppod:/usr/share/nginx/html# exit
+exit
+❯ 
+❯ kubectl  exec  -it  ashuemppod  -c ashuemppod   -- sh
+/ # 
+/ # 
+/ # cd /mnt/oracle/
+/mnt/oracle # ls
+time.txt
+/mnt/oracle # exit
+
+```
+
+
+
 
 
 
