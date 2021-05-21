@@ -213,6 +213,78 @@ system:controller:attachdetach-controller
 
 ```
 
+# Deployment 
+
+## deployment understanding 
+
+<img src="dep.png">
+
+### reality of deployent 
+
+<img src="depreal.png">
+
+### creating deployment using yaml 
+
+```
+❯ kubectl  create  deployment  ashuwebapp  --image=dockerashu/ashunginx:v1  --dry-run=client -o yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashuwebapp
+  name: ashuwebapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashuwebapp
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashuwebapp
+    spec:
+      containers:
+      - image: dockerashu/ashunginx:v1
+        name: ashunginx
+        resources: {}
+
+```
+
+### 
+
+```
+ kubectl  create  deployment  ashuwebapp  --image=dockerashu/ashunginx:v1  --dry-run=client -o yaml   >ashudep.yml
+ 
+```
+### creating loadbalancer type service 
+
+```
+kubectl   create  service  loadbalancer  ashusvc1  --tcp  1234:80  --dry-run=client -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashusvc1
+  name: ashusvc1
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: ashusvc1
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+  
+```
+
+
 
 
 
