@@ -284,6 +284,73 @@ status:
   
 ```
 
+### Deployment 
+
+```
+ kubectl  apply  -f  ashudep.yml
+deployment.apps/ashuwebapp created
+Warning: resource services/ashusvc1 is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
+service/ashusvc1 configured
+❯ kubectl   get  deployment
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+ashuwebapp   1/1     1            1           9s
+❯ kubectl   get  deploy
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+ashuwebapp   1/1     1            1           13s
+❯ kubectl  get  svc
+NAME       TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+ashusvc1   LoadBalancer   10.104.49.138   <pending>     1234:32261/TCP   55m
+
+```
+
+### scaling pod 
+
+```
+❯ kubectl  scale deployment  ashuwebapp  --replicas=3
+deployment.apps/ashuwebapp scaled
+❯ 
+❯ kubectl  get deploy
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+ashuwebapp   3/3     3            3           105s
+❯ kubectl   get   rs
+NAME                    DESIRED   CURRENT   READY   AGE
+ashuwebapp-7558d54776   3         3         3       108s
+❯ kubectl   get  po
+NAME                          READY   STATUS    RESTARTS   AGE
+ashupod111                    1/1     Running   0          110m
+ashuwebapp-7558d54776-l9th2   1/1     Running   0          112s
+ashuwebapp-7558d54776-lp5gm   1/1     Running   0          11s
+ashuwebapp-7558d54776-ncj6l   1/1     Running   0          11s
+
+```
+
+## more commands to deployment 
+
+```
+10200  kubectl  apply -f  ashudep.yml
+10201  kubectl  get po
+10202  kubectl  describe deploy  ashuwebapp
+10203  history
+10204  kubectl  rollout undo  deployment  ashuwebapp  
+10205  kubectl  get  po 
+10206  kubectl  describe deploy  ashuwebapp
+10207  kubectl  get  po 
+10208  history
+10209  kubectl  rollout  history  deployment  ashuwebapp  
+10210  history
+10211  kubectl  describe deploy  ashuwebapp
+10212  history
+10213  kubectl  describe deploy  ashuwebapp
+10214  kubectl  set  image  deployment  ashuwebapp  ashunginx=dockerashu/ashunginx:v2
+10215  kubectl  describe deploy  ashuwebapp
+❯ kubectl  rollout  history  deployment  ashuwebapp
+deployment.apps/ashuwebapp 
+REVISION  CHANGE-CAUSE
+3         <none>
+4         <none>
+
+```
+
 
 
 
